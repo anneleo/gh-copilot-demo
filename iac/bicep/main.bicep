@@ -76,6 +76,7 @@ resource containerAppsEnv 'Microsoft.App/managedEnvironments@2022-03-01' = {
   }
 }
 
+
 module daprStateStore 'modules/dapr-statestore.bicep' = {
   name: '${deployment().name}--dapr-statestore'
   dependsOn:[
@@ -129,3 +130,33 @@ output env array=[
   'Storage account name: ${storageAccount.name}'
   'Storage container name: ${blobContainer.name}'
 ]
+
+# Container Registry
+
+# Azure Container Registry
+resource containerRegistry 'Microsoft.ContainerRegistry/registries@2021-06-01-preview' = {
+  name: registryName
+  location: location
+  sku: {
+    name: 'Basic'
+  }
+  properties: {
+    adminUserEnabled: true
+  }
+}
+
+
+# Azure Open AI resource
+resource azureOpenAI 'Microsoft.CognitiveServices/accounts@2022-12-01' = {
+  name: 'aoai-${uniqueSuffix}'
+  location: location
+  kind: 'OpenAI'
+  sku: {
+    name: 'S0'
+  }
+  properties: {
+    publicNetworkAccess: 'Enabled'
+  }   
+  
+
+
